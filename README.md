@@ -304,7 +304,3 @@ Funcionalidades
 ✅ Formulario de creación de productos
 ✅ Mock API con localStorage
 ✅ Pruebas unitarias
-
-
-
-
