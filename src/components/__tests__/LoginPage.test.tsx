@@ -3,11 +3,20 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { useAuthStore } from '../../store/authStore'
 import LoginPage from '../../pages/LoginPage'
 
+
+const mockLocation = {
+  href: ''
+}
+Object.defineProperty(window, 'location', {
+  value: mockLocation,
+  writable: true
+})
+
 // Mock del router
-const mockNavigate = vi.fn()
-vi.mock('@tanstack/react-router', () => ({
-  useNavigate: () => mockNavigate
-}))
+// const mockNavigate = vi.fn()
+// vi.mock('@tanstack/react-router', () => ({
+//   useNavigate: () => mockNavigate
+// }))
 
 describe('LoginPage', () => {
   beforeEach(() => {
@@ -52,7 +61,7 @@ describe('LoginPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /iniciar sesión/i }))
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith({ to: '/dashboard' })
+      expect(mockLocation.href).toBe('/dashboard')
     })
   })
 

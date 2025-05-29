@@ -18,7 +18,7 @@ describe('ProductsStore', () => {
   })
 
   it('should add a new product', () => {
-    const { addProduct, products } = useProductsStore.getState()
+    const { addProduct } = useProductsStore.getState()
     
     const newProduct = {
       name: 'Test Product',

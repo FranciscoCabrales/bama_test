@@ -1,16 +1,34 @@
 import React from 'react'
-import { Link } from '@tanstack/react-router'
+//import { Link } from '@tanstack/react-router'
 import { useProductsStore } from '../store/productsStore'
 import { useAuthStore } from '../store/authStore'
 import { BoxIcon, PlusIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
+//import { useNavigate } from '@tanstack/react-router'
+
+interface Product {
+  id: string | number
+  name: string
+  description: string
+  category: string
+  price: number
+  stock: number
+}
 
 const DashboardPage: React.FC = () => {
   const { products } = useProductsStore()
   const { user } = useAuthStore()
+  //const navigate = useNavigate()
 
-  const totalProducts = products.length
-  const totalValue = products.reduce((sum: number, product: { price: number; stock: number }) => sum + (product.price * product.stock), 0)
-  const lowStockProducts = products.filter((product: { stock: number }) => product.stock < 10).length
+  const typedProducts = products as Product[]
+  const totalProducts = typedProducts.length
+  const totalValue = typedProducts.reduce((sum: number, product: Product) => {
+    const stock = typeof product.stock === 'number' ? product.stock : 0
+    return sum + (product.price * stock)
+  }, 0)
+  const lowStockProducts = typedProducts.filter((product: Product) => {
+    const stock = typeof product.stock === 'number' ? product.stock : 0
+    return stock < 10
+  }).length  
   const categories = [...new Set(products.map((product: { category: any }) => product.category))].length
 
   const stats = [
@@ -47,13 +65,17 @@ const DashboardPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600">Bienvenido de vuelta, {user?.name}</p>
         </div>
-        <Link
-          to="/products"
+        <button
+          onClick={() => {
+            window.location.href = '/products'
+            // Aquí puedes usar navigate() o window.location.href si es necesario
+            console.log('Navegar a productos')
+          }}
           className="inline-flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           <PlusIcon className="w-4 h-4" />
           <span>Gestionar Productos</span>
-        </Link>
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -79,17 +101,21 @@ const DashboardPage: React.FC = () => {
           <h2 className="text-lg font-semibold text-gray-900">Productos Recientes</h2>
         </div>
         <div className="p-6">
-          {products.length === 0 ? (
+        {typedProducts.length === 0 ? (
             <div className="text-center py-8">
               <BoxIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-500">No hay productos registrados</p>
-              <Link
-                to="/products"
+              <button
+                onClick={() => {
+                  // Navegación programática
+                  window.location.href = '/products'
+                  console.log('Navegar a productos')
+                }}
                 className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 mt-2"
               >
                 <PlusIcon className="w-4 h-4" />
                 <span>Agregar primer producto</span>
-              </Link>
+              </button>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -103,7 +129,7 @@ const DashboardPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.slice(0, 5).map((product: { id: React.Key | null | undefined; name: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; description: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; category: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; price: number; stock: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined }) => (
+                {typedProducts.slice(0, 5).map((product: Product) => (
                     <tr key={product.id} className="border-b">
                       <td className="py-3">
                         <div>
@@ -120,13 +146,18 @@ const DashboardPage: React.FC = () => {
                         ${product.price.toFixed(2)}
                       </td>
                       <td className="py-3">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          product.stock < 10 
-                            ? 'bg-red-100 text-red-800' 
-                            : 'bg-green-100 text-green-800'
-                        }`}>
-                          {product.stock} unidades
-                        </span>
+                      {(() => {
+                          const stock = typeof product.stock === 'number' ? product.stock : 0
+                          return (
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              stock < 10 
+                                ? 'bg-red-100 text-red-800' 
+                                : 'bg-green-100 text-green-800'
+                            }`}>
+                              {stock} unidades
+                            </span>
+                          )
+                        })()}
                       </td>
                     </tr>
                   ))}

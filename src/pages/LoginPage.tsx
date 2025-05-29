@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+//import { useNavigate } from '@tanstack/react-router'
 import { useAuthStore } from '../store/authStore'
 
 const LoginPage = () => {
@@ -9,7 +9,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const login = useAuthStore((state) => state.login)
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +32,7 @@ const LoginPage = () => {
     setIsLoading(false)
 
     if (success) {
-      navigate({ to: '/dashboard' })
+      window.location.href = '/dashboard'
     } else {
       setError('Credenciales inválidas')
     }

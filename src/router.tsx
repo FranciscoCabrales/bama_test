@@ -18,7 +18,7 @@ const loginRoute = createRoute({
   beforeLoad: () => {
     const { isAuthenticated } = useAuthStore.getState()
     if (isAuthenticated) {
-      throw redirect({ to: '/dashboard' })
+      window.location.href = '/dashboard'
     }
   },
 })
@@ -51,9 +51,9 @@ const indexRoute = createRoute({
   beforeLoad: () => {
     const { isAuthenticated } = useAuthStore.getState()
     if (isAuthenticated) {
-      throw redirect({ to: '/dashboard' })
+      window.location.href = '/dashboard'
     } else {
-      throw redirect({ to: '/login' })
+      window.location.href = '/login'
     }
   },
 })

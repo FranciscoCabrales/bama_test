@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useProductsStore, Product } from '../store/productsStore'
 import * as Dialog from '@radix-ui/react-dialog'
-import { PlusIcon, MagnifyingGlassIcon, Pencil1Icon, TrashIcon, Cross2Icon } from '@radix-ui/react-icons'
+import { PlusIcon, Cross2Icon } from '@radix-ui/react-icons'
 import ProductForm from '../components/Products/ProductForm'
 import ProductTable from '../components/Products/ProductTable'
 import SearchInput from '../components/UI/SearchInput'
